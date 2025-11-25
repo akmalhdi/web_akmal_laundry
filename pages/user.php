@@ -5,7 +5,7 @@
 // require
 // require_once "config/koneksi.php";
 
-$query = mysqli_query($config, "SELECT * FROM users");
+$query = mysqli_query($config, "SELECT levels.name AS level_name, users.* FROM users LEFT JOIN levels ON users.id_level = levels.id");
 
 $users = mysqli_fetch_all($query, MYSQLI_ASSOC);
 
@@ -17,6 +17,17 @@ if (isset($_GET['delete'])) {
     header("location:?page=user&hapus=berhasil");
 }
 ?>
+
+<div class="pagetitle">
+    <h1>User</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="?page=dashboard">Home</a></li>
+            <li class="breadcrumb-item">Pages</li>
+            <li class="breadcrumb-item active">Blank</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
 
 <div class="row">
     <div class="col-sm-12">
@@ -39,6 +50,7 @@ if (isset($_GET['delete'])) {
                     <thead>
                         <tr align="center">
                             <th>No</th>
+                            <th>Level</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Actions</th>
@@ -48,6 +60,7 @@ if (isset($_GET['delete'])) {
                         <?php foreach ($users as $key => $value) { ?>
                             <tr>
                                 <td><?php echo $key += 1 ?></td>
+                                <td><?php echo $value['level_name'] ?></td>
                                 <td><?php echo $value['name'] ?></td>
                                 <td><?php echo $value['email'] ?></td>
                                 <td align="center">

@@ -11,6 +11,17 @@ if (isset($_GET['delete'])) {
 
 ?>
 
+<div class="pagetitle">
+    <h1>Level</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="?page=dashboard">Home</a></li>
+            <li class="breadcrumb-item">Pages</li>
+            <li class="breadcrumb-item active">Blank</li>
+        </ol>
+    </nav>
+</div><!-- End Page Title -->
+
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
@@ -41,6 +52,9 @@ if (isset($_GET['delete'])) {
                                 <td><?php echo $key + 1 ?></td>
                                 <td><?php echo $level['name'] ?></td>
                                 <td>
+                                    <a class="btn btn-warning btn-sm" href="?page=add-role-menu&edit=<?php echo $level['id'] ?>">
+                                        <i class="bi bi-people"></i>
+                                    </a>
                                     <a class="btn btn-success btn-sm" href="?page=tambah-level&edit=<?php echo $level['id'] ?>">
                                         <i class="bi bi-pencil"></i>
                                     </a>
