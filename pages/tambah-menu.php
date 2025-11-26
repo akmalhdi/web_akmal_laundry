@@ -19,7 +19,7 @@ if (isset($_POST['simpan'])) {
     $icon = $_POST['icon'];
     $link = $_POST['link'];
     $order = $_POST['order'];
-    $insert = mysqli_query($config, "INSERT INTO menus (name, icon, link, order) VALUES ('$name', '$icon', '$link', '$order')");
+    $insert = mysqli_query($config, "INSERT INTO menus (name, icon, link, `order`) VALUES ('$name', '$icon', '$link', '$order')");
 
     header("location:?page=menu&tambah=berhasil");
 }

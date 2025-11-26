@@ -27,13 +27,13 @@ if (isset($_GET['delete'])) {
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
-                    Data Levels
+                    Data Level
                 </h3>
             </div>
             <div class="card-body">
                 <div align="right">
                     <a href="?page=tambah-level" class="btn btn-primary btn-sm mb-3 mt-3">
-                        <i class="bi bi-plus-circle"></i> Add Levels
+                        <i class="bi bi-plus-circle"></i> Add Level
                     </a>
                 </div>
                 <table class="table table-bordered table-striped datatable">

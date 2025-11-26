@@ -30,7 +30,7 @@ if (isset($_GET['delete'])) {
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">
-                    Data Services
+                    Data Service
                 </h3>
             </div>
             <div class="card-body">
