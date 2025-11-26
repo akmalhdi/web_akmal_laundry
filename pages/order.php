@@ -22,7 +22,7 @@ if (isset($_GET['delete'])) {
                     Data Order
                 </h3>
                 <div align="right">
-                    <a href="?page=order.php" class="btn btn-primary btn-sm mb-3 mt-3">
+                    <a href="pos/add-order.php" class="btn btn-primary btn-sm mb-3 mt-3">
                         <i class="bi bi-plus-circle"></i> Add Order
                     </a>
                 </div>

@@ -124,7 +124,7 @@ $order_code = "ORD-" . date("dmy") . str_pad($nextId, 4, "0", STR_PAD_LEFT);
                     <button class="btn btn-primary category-btn active" onclick="filterCategory('all', this)">All Menu</button>
                     <?php
                     foreach ($fetchCats as $cat) {
-                    ?>
+                    ?>0
                         <button class="btn btn-outline-primary category-btn" onclick="filterCategory('<?php echo $cat['category_name'] ?>', this)">
                             <?php echo $cat['category_name'] ?>
                         </button>
