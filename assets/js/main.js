@@ -6,6 +6,13 @@
 * License: https://bootstrapmade.com/license/
 */
 
+function selectCustomers(){
+  const select = document.getElementById('customer_id')
+  const phone = select.options[select.selectedIndex].dataSet.phone
+
+  document.getElementById('phone').value = phone || ''
+}
+
 (function() {
   "use strict";
 

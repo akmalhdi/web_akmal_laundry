@@ -84,8 +84,14 @@ body {
   margin-bottom: 15px;
 }
 
-.btn-chechout {
+.btn-checkhout {
     border: none;
+    padding: 15px;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.btn-clear-cart {
     padding: 15px;
     font-size: 1rem;
     font-weight: bold;
