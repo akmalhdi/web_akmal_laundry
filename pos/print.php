@@ -1,18 +1,19 @@
 <?php
 session_start();
-include "../config/koneksi.php";
+include "../config/config.php";
 
+$id = $_GET['id'] ?? '';
 // ambil data table orders
-$query = mysqli_query($koneksi, "SELECT * FROM orders ORDER BY id DESC");
+$query = mysqli_query($config, "SELECT * FROM trans_orders WHERE id = '$id' ORDER BY id DESC");
 $row = mysqli_fetch_assoc($query);
 
 // ambil data table order details
 $order_id = $row['id'];
-$queryDetails = mysqli_query($koneksi, "SELECT p.product_name, od.* FROM order_details od LEFT JOIN products p ON p.id = od.product_id WHERE order_id = '$order_id'");
+$queryDetails = mysqli_query($config, "SELECT s.name, od.* FROM trans_order_details od LEFT JOIN services s ON s.id = od.id_service WHERE id_order = '$order_id'");
 $rowDetails = mysqli_fetch_all($queryDetails, MYSQLI_ASSOC);
 
-// ppn
-$tax = $row['order_subtotal'] * 0.1;
+$queryTax = mysqli_query($config, "SELECT * FROM taxs WHERE is_active = 1");
+$taxs = mysqli_fetch_assoc($queryTax);
 
 ?>
 
@@ -22,7 +23,7 @@ $tax = $row['order_subtotal'] * 0.1;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Struk Pembayaran</title>
+    <title>Struk Transaksi Laundry</title>
 
     <style>
         body {
@@ -130,7 +131,7 @@ $tax = $row['order_subtotal'] * 0.1;
     <div class="receipt-page">
 
         <div class="header">
-            <h2>Struk Pembayaran</h2>
+            <h2>Struk MariLaundry</h2>
             <p>Jl. Benhil Karet Jakarta Pusat</p>
             <p>08999809989</p>
         </div>
@@ -170,9 +171,9 @@ $tax = $row['order_subtotal'] * 0.1;
         <div class="items">
             <?php foreach ($rowDetails as $item): ?>
                 <div class="item">
-                    <span class="item-name"><?php echo $item['product_name'] ?></span>
+                    <span class="item-name"><?php echo $item['name'] ?></span>
                     <span class="item-qty"><?php echo "X" . $item['qty'] ?></span>
-                    <span class="item-price"><?php echo "Rp. " . number_format($item['order_price'], 0, ',', '.') ?></span>
+                    <span class="item-price"><?php echo "Rp. " . number_format($item['price'], 0, ',', '.') ?></span>
                 </div>
             <?php endforeach ?>
         </div>
@@ -180,14 +181,16 @@ $tax = $row['order_subtotal'] * 0.1;
         <div class="separator"></div>
 
         <div class="totals">
+            <?php foreach($rowDetails as $detail): ?>
             <div class="total-row">
                 <span>Sub Total</span>
-                <span><?php echo "Rp. " . number_format($row['order_subtotal'], 0, ',', '.') ?></span>
+                <span><?php echo "Rp. " . number_format($detail['subtotal'], 0, ',', '.') ?></span>
             </div>
+            <?php endforeach ?>
 
             <div class="total-row">
-                <span>Ppn (10%)</span>
-                <span><?php echo "Rp. " . number_format($tax, 0, ',', '.') ?></span>
+                <span>Ppn (<?= $taxs['percent'] ?>%)</span>
+                <span><?php echo "Rp. " . number_format($row['order_tax'], 0, ',', '.') ?></span>
             </div>
         </div>
 
@@ -196,7 +199,7 @@ $tax = $row['order_subtotal'] * 0.1;
         <div class="payment">
             <div class="total-row grand">
                 <span>Total</span>
-                <span><?php echo "Rp. " . number_format($row['order_amount'], 0, ',', '.') ?></span>
+                <span><?php echo "Rp. " . number_format($row['order_total'], 0, ',', '.') ?></span>
             </div>
 
             <!-- <div class="total-row">

@@ -51,8 +51,8 @@ if (isset($_GET['delete'])) {
                             <td><?php echo $value['order_change'] ?></td>
                             <td><?php echo $value['order_status'] ?></td>
                             <td>
-                                <a class="btn btn-success btn-sm" href="?page=tambah-order&edit=<?php echo $value['id'] ?>">
-                                    <i class="bi bi-pencil"></i>
+                                <a class="btn btn-success btn-sm" href="pos/print.php?id=<?= $value['id'] ?>">
+                                    <i class="bi bi-printer"></i> Print
                                 </a>
                                 <a class="btn btn-danger btn-sm" onclick="return confirm('Apakah anda yakin akan menghapus data ini?')"
                                     href="?page=order&delete=<?php echo $value['id'] ?>">

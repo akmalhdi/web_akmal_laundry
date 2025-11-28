@@ -100,7 +100,7 @@ function openModal(service) {
   document.getElementById("modal_id").value = service.id;
   document.getElementById("modal_name").value = service.name;
   document.getElementById("modal_price").value = service.price;
-  document.getElementById("modal_qty").value = 1;
+  document.getElementById("modal_qty").value = service.qty;
 
   new bootstrap.Modal("#exampleModal").show();
 }
@@ -110,13 +110,13 @@ let cart = [];
 function addToCart() {
   const id = document.getElementById("modal_id").value;
   const name = document.getElementById("modal_name").value;
-  const price = parseInt(document.getElementById("modal_price").value);
-  const qty = parseInt(document.getElementById("modal_qty").value);
+  const price = parseFloat(document.getElementById("modal_price").value);
+  const qty = parseFloat(document.getElementById("modal_qty").value);
 
   const existing = cart.find((item) => item.id == id);
 
   if (existing) {
-    existing.quantity += qty;
+    existing.qty += qty;
   } else {
     cart.push({
       id,
@@ -126,6 +126,11 @@ function addToCart() {
     });
   }
   renderCart();
+
+  // Tutup modal setelah menambahkan ke keranjang
+  const modalElement = document.getElementById("exampleModal");
+  const modalInstance = bootstrap.Modal.getInstance(modalElement);
+  modalInstance.hide();
 }
 
 function renderCart() {
@@ -142,6 +147,7 @@ function renderCart() {
                 </div>`;
     updateTotal();
   }
+
   cart.forEach((item, index) => {
     const div = document.createElement("div");
     div.className =
@@ -158,13 +164,7 @@ function renderCart() {
                     </small>
                 </div>
                 <div class="d-flex align-items-center">
-                    <button class="btn btn-outline-secondary me-2" onclick="changeQty(${
-                      item.id
-                    }, -1)">-</button>
                     <span>${item.qty}</span>
-                    <button class="btn btn-outline-secondary ms-2" onclick="changeQty(${
-                      item.id
-                    }, 1)">+</button>
                     <button class="btn btn-danger btn-sm ms-3" onclick="removeItem(${
                       item.id
                     })">
@@ -174,6 +174,7 @@ function renderCart() {
     cartContainer.appendChild(div);
   });
   updateTotal();
+  calculateChange();
 }
 
 function removeItem(id) {
@@ -194,8 +195,10 @@ function changeQty(id, x) {
 }
 
 function updateTotal() {
-  const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-  const tax = subtotal * 0.1;
+  const taxs = parseFloat(document.getElementById('taxs').value);
+  const taxsRate = taxs ? taxs : 0.1;
+  const subtotal = cart.reduce((sum, item) => sum + parseFloat(item.price) * parseFloat(item.qty), 0);
+  const tax = subtotal * taxsRate;
   const total = subtotal + tax;
 
   document.getElementById("subtotal").textContent = `${Number(
@@ -246,11 +249,10 @@ async function processPayment() {
   const subtotal = document.querySelector("#subtotal_value").value.trim();
   const tax = document.querySelector("#tax_value").value.trim();
   const grandTotal = document.querySelector("#total_value").value.trim();
-  const customer_id = document.getElementById("customer_id").value;
-  //   const customer_id =
-  //     selectCustomer.options[selectCustomer.selectedIndex].value;
-
+  const customer_id = parseInt(document.getElementById("customer_id").value);
   const order_end_date = document.getElementById("order_end_date").value;
+  const pay = parseFloat(document.getElementById("pay").value);
+  const change = parseFloat(document.getElementById("change").value);
 
   try {
     const res = await fetch("add-order.php?payment", {
@@ -264,6 +266,8 @@ async function processPayment() {
         grandTotal,
         customer_id,
         order_end_date,
+        pay,
+        change,
       }),
     });
 
@@ -271,7 +275,7 @@ async function processPayment() {
 
     if (data.status == "success") {
       alert("transaction success");
-      window.location.href = "print.php";
+      window.location.href = "print.php?id=" + data.id_order;
     } else {
       alert("transaction failed", data.message);
     }
@@ -279,4 +283,13 @@ async function processPayment() {
     alert("transaction failed");
     console.log("error", error);
   }
+}
+
+function calculateChange(){
+  const total = parseFloat(document.getElementById('total_value').value);
+  const pay = parseFloat(document.getElementById('pay').value);
+
+  let change = pay - total;
+  if ( change < 0 ) change = 0;
+  document.getElementById('change').value = change > 0 ? change.toLocaleString() : '0';
 }

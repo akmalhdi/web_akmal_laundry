@@ -8,9 +8,8 @@ $services = mysqli_fetch_all($queryServices, MYSQLI_ASSOC);
 $queryCustomers = mysqli_query($config, "SELECT * FROM customers");
 $customers = mysqli_fetch_all($queryCustomers, MYSQLI_ASSOC);
 
-// query product
-// $queryProduct = mysqli_query($config, "SELECT s.name, p.* FROM products p LEFT JOIN categories c ON c.id = p.category_id ORDER BY id DESC");
-// $fetchProducts = mysqli_fetch_all($queryProduct, MYSQLI_ASSOC);
+$queryTaxs = mysqli_query($config, "SELECT * FROM taxs WHERE is_active = 1 ORDER BY id DESC LIMIT 1");
+$taxs = mysqli_fetch_assoc($queryTaxs);
 
 if (isset($_GET['payment'])) {
 
@@ -25,15 +24,15 @@ if (isset($_GET['payment'])) {
     $orderCode = $data['order_code'];
     $order_end_date = $data['order_end_date'];
     $customer_id = $data['customer_id'];
-    $orderChange = 0;
-    $orderPay = 0;
+    $orderChange = $data['change'];
+    $orderPay = $data['pay'];
     $orderStatus = 1;
 
     try {
         $insertOrder = mysqli_query(
             $config,
-            "INSERT INTO trans_orders (order_code, order_end_date, order_total, order_pay, order_change, order_tax, order_status) 
-            VALUES('$orderCode', '$order_end_date', '$orderAmounth', '$orderPay', '$orderChange', '$tax', '$orderStatus')"
+            "INSERT INTO trans_orders (id_customer, order_code, order_end_date, order_total, order_pay, order_change, order_tax, order_status) 
+            VALUES('$customer_id', '$orderCode', '$order_end_date', '$orderAmounth', '$orderPay', '$orderChange', '$tax', '$orderStatus')"
         );
 
         if (!$insertOrder) {
@@ -65,7 +64,7 @@ if (isset($_GET['payment'])) {
         $response = [
             'status' => 'success',
             'message' => 'Transaction success',
-            'order_id' => $idOrder,
+            'id_order' => $idOrder,
             'order_code' => $orderCode,
         ];
         echo json_encode($response);
@@ -108,7 +107,7 @@ $order_code = "ORD-" . date("dmy") . str_pad($nextId, 4, "0", STR_PAD_LEFT);
 <body>
     <div class="container-fluid container-pos">
         <div class="row h-100">
-            <div class="col-md-7 product-section">
+            <div class="col-md-8 product-section">
                 <div class="card shadow-sm mb-3">
                     <div class="card-header text-center fs-4">
                         Laundry Customer
@@ -182,7 +181,6 @@ $order_code = "ORD-" . date("dmy") . str_pad($nextId, 4, "0", STR_PAD_LEFT);
                             <div class="modal-body">
                                 <input type="hidden" id="modal_id">
                                 <input type="hidden" id="modal_price">
-                                <input type="hidden" id="modal_qty">
 
                                 <div class="mb-3">
                                     <label for="" class="form-label">
@@ -195,7 +193,7 @@ $order_code = "ORD-" . date("dmy") . str_pad($nextId, 4, "0", STR_PAD_LEFT);
                                     <label for="" class="form-label">
                                         Weight / Qty
                                     </label>
-                                    <input type="number" name="modal_qty" class="form-control" placeholder="weight / Qty">
+                                    <input type="number" id="modal_qty" name="modal_qty" class="form-control" placeholder="weight / Qty" step="0.1" min='0'>
                                 </div>
                             </div>
                             <div class="modal-footer">
@@ -207,7 +205,7 @@ $order_code = "ORD-" . date("dmy") . str_pad($nextId, 4, "0", STR_PAD_LEFT);
                 </div>
             </div>
 
-            <div class="col-md-5 cart-section">
+            <div class="col-md-4 cart-section">
 
                 <div class="cart-header">
                     <h4>Cart</h4>
@@ -233,9 +231,10 @@ $order_code = "ORD-" . date("dmy") . str_pad($nextId, 4, "0", STR_PAD_LEFT);
                         </div>
 
                         <div class="d-flex justify-content-between mb-2">
-                            <span>Tax(10%)</span>
+                            <span>Tax(<?= $taxs['percent'] ?? '10' ?>%)</span>
                             <span id="tax">Rp 0.-</span>
                             <input type="hidden" id="tax_value">
+                            <input type="hidden" id="taxs" value="<?= $taxs['percent'] / 100 ?>">
                         </div>
 
                         <div class="d-flex justify-content-between mb-2">
@@ -243,30 +242,42 @@ $order_code = "ORD-" . date("dmy") . str_pad($nextId, 4, "0", STR_PAD_LEFT);
                             <span id="total">Rp 0.-</span>
                             <input type="hidden" id="total_value">
                         </div>
+                    </div>
 
-                        <div class="row g-2">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Pay</span>
+                        <input type="number" id="pay" class="form-control w-50" placeholder="Enter the payment amount" oninput="calculateChange()">
+                    </div>
 
-                            <div class="col-md-6">
-                                <button class="btn btn-clear-cart btn-danger w-100" id="clearCart">
-                                    <i class="bi bi-trash"></i>Clear Cart
-                                </button>
-                            </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Change</span>
+                        <input type="number" id="change" class="form-control w-50" readonly>
+                    </div>
+                </div>
 
-                            <div class="col-md-6">
-                                <button class="btn btn-checkhout btn-primary w-100"
-                                    onclick="processPayment()">
-                                    <i class="bi bi-cash"></i> Process Payment
-                                </button>
-                            </div>
+                <div class="row g-2">
 
-                        </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-clear-cart btn-danger w-100" id="clearCart">
+                            <i class="bi bi-trash"></i>Clear Cart
+                        </button>
+                    </div>
 
+                    <div class="col-md-6">
+                        <button class="btn btn-checkhout btn-primary w-100"
+                            onclick="processPayment()">
+                            <i class="bi bi-cash"></i> Process Payment
+                        </button>
                     </div>
 
                 </div>
 
             </div>
+
         </div>
+
+    </div>
+    </div>
     </div>
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
