@@ -252,12 +252,14 @@ async function processPayment() {
   const customer_id = parseInt(document.getElementById("customer_id").value);
   const order_end_date = document.getElementById("order_end_date").value;
   const pay = parseFloat(document.getElementById("pay").value);
-  const change = parseFloat(document.getElementById("change").value);
+  const change = parseFloat(document.getElementById("change_value").value);
+  const notes = document.getElementById('notes').value;
+  const taxs = parseFloat(document.getElementById('taxs').value) * 100;
 
   try {
     const res = await fetch("add-order.php?payment", {
       method: "POST",
-      headers: { "Content-Type": "aplication/json" },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         cart,
         order_code,
@@ -268,6 +270,8 @@ async function processPayment() {
         order_end_date,
         pay,
         change,
+        notes,
+        taxs,
       }),
     });
 
@@ -285,11 +289,20 @@ async function processPayment() {
   }
 }
 
-function calculateChange(){
-  const total = parseFloat(document.getElementById('total_value').value);
-  const pay = parseFloat(document.getElementById('pay').value);
+function calculateChange() {
+  const total = parseFloat(document.getElementById('total_value').value) ||  0;
+  const pay = parseFloat(document.getElementById('pay').value) || 0;
 
   let change = pay - total;
-  if ( change < 0 ) change = 0;
-  document.getElementById('change').value = change > 0 ? change.toLocaleString() : '0';
+  if (change < 0) change = 0;
+
+  // Simpan angka mentah untuk backend
+  document.getElementById('change_value').value = change;
+
+  // Tampilkan format IDR untuk user
+  document.getElementById('change_display').value = change.toLocaleString("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  });
 }

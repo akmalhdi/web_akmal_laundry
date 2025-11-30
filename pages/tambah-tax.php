@@ -25,34 +25,34 @@ if (isset($_POST['simpan'])) {
 <div class="row">
     <div class="col-sm-12">
         <div class="card">
-            <div class="card-body">
-                <div class="card-title">
-                    <h3><?php echo isset($_GET['edit']) ? 'Update' : 'Add' ?> Tax</h3>
-                </div>
-                <div class="card-body">
-                    <form action="" method="post">
-                        <div class="mb-3">
-                            <label for="" class="form-label">Percent</label>
-                            <input class="form-control" type="number" name="percent" value="<?php echo $tax['percent'] ?? "" ?>" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="" class="form-label">Status</label>
-                            <br>
-                            <input type="radio" name="is_active" value="0"
-                                <?= ($tax['is_active'] ?? '') == 0 ? 'checked' : '' ?>> Draft
-                            <br>
-                            <input type="radio" name="is_active" value="1"
-                                <?= ($tax['is_active'] ?? '') == 1 ? 'checked' : '' ?>> Active
-                        </div>
-                        <div class="mb-3 d-flex justify-content-center gap-2">
-                            <button class="btn btn-primary btn-sm" type="submit"
-                                name="<?php echo isset($_GET['edit']) ? 'update' : 'simpan' ?>">
-                                <?php echo isset($_GET['edit']) ? 'Edit' : 'Save' ?>
-                            </button>
-                            <a href="?page=tax" class="btn btn-primary btn-sm">Back</a>
-                        </div>
-                    </form>
-                </div>
+            <div class="card-header">
+                <h3 class="card-title">
+                    <?php echo isset($_GET['edit']) ? 'Update' : 'Add' ?> Tax
+                </h3>
+            </div>
+            <div class="card-body mt-3">
+                <form action="" method="post">
+                    <div class="mb-3">
+                        <label for="" class="form-label">Percent</label>
+                        <input class="form-control" type="number" name="percent" value="<?php echo $tax['percent'] ?? "" ?>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="" class="form-label">Status</label>
+                        <br>
+                        <input type="radio" name="is_active" value="0"
+                            <?= ($tax['is_active'] ?? '') == 0 ? 'checked' : '' ?>> Draft
+                        <br>
+                        <input type="radio" name="is_active" value="1"
+                            <?= ($tax['is_active'] ?? '') == 1 ? 'checked' : '' ?>> Active
+                    </div>
+                    <div class="mb-3 d-flex justify-content-center gap-2">
+                        <button class="btn btn-primary btn-sm" type="submit"
+                            name="<?php echo isset($_GET['edit']) ? 'update' : 'simpan' ?>">
+                            <?php echo isset($_GET['edit']) ? 'Edit' : 'Save' ?>
+                        </button>
+                        <a href="?page=tax" class="btn btn-primary btn-sm">Back</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

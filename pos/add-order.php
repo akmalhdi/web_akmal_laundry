@@ -27,12 +27,14 @@ if (isset($_GET['payment'])) {
     $orderChange = $data['change'];
     $orderPay = $data['pay'];
     $orderStatus = 1;
+    $notes = $data['notes'];
+    $activeTax = $data['taxs'];
 
     try {
         $insertOrder = mysqli_query(
             $config,
-            "INSERT INTO trans_orders (id_customer, order_code, order_end_date, order_total, order_pay, order_change, order_tax, order_status) 
-            VALUES('$customer_id', '$orderCode', '$order_end_date', '$orderAmounth', '$orderPay', '$orderChange', '$tax', '$orderStatus')"
+            "INSERT INTO trans_orders (notes, active_tax, id_customer, order_code, order_end_date, order_total, order_pay, order_change, order_tax, order_status) 
+            VALUES('$notes', '$activeTax', '$customer_id', '$orderCode', '$order_end_date', '$orderAmounth', '$orderPay', '$orderChange', '$tax', '$orderStatus')"
         );
 
         if (!$insertOrder) {
@@ -106,12 +108,16 @@ $order_code = "ORD-" . date("dmy") . str_pad($nextId, 4, "0", STR_PAD_LEFT);
 
 <body>
     <div class="container-fluid container-pos">
-        <div class="row h-100">
-            <div class="col-md-8 product-section">
+        <h1 class="card-title d-flex justify-content-center my-2">
+            <img style="width: 50px; margin-right: 10px;" src="../assets/img/logo/bubbles.png" alt="">
+            MariLaundry
+        </h1>
+        <div class="row content">
+            <div class="col-md-8 order-section">
                 <div class="card shadow-sm mb-3">
-                    <div class="card-header text-center fs-4">
+                    <h3 class="card-header text-center fs-4">
                         Laundry Customer
-                    </div>
+                    </h3>
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-md-6">
@@ -137,7 +143,7 @@ $order_code = "ORD-" . date("dmy") . str_pad($nextId, 4, "0", STR_PAD_LEFT);
 
                             <div class="col-md-6">
                                 <label for="" class="form-label">
-                                    End Date
+                                    Estimation
                                 </label>
                                 <input type="date" name="order_end_date" id="order_end_date" class="form-control">
                             </div>
@@ -147,6 +153,14 @@ $order_code = "ORD-" . date("dmy") . str_pad($nextId, 4, "0", STR_PAD_LEFT);
                                     Address
                                 </label>
                                 <input type="text" name="address" id="address" class="form-control" placeholder="Address" readonly>
+                            </div>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col">
+                                <div class="mt-3">
+                                    <label for="" class="form-label">Notes</label>
+                                    <textarea name="notes" id="notes" class="form-control"></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -168,6 +182,10 @@ $order_code = "ORD-" . date("dmy") . str_pad($nextId, 4, "0", STR_PAD_LEFT);
                             <?php endforeach ?>
                         </div>
                     </div>
+                </div>
+
+                <div class="mb-3 d-flex justify-content-center gap-2">
+                    <a href="../home.php" class="btn btn-back btn-primary">Back</a>
                 </div>
 
                 <!-- Modal -->
@@ -205,23 +223,21 @@ $order_code = "ORD-" . date("dmy") . str_pad($nextId, 4, "0", STR_PAD_LEFT);
                 </div>
             </div>
 
-            <div class="col-md-4 cart-section">
-
-                <div class="cart-header">
-                    <h4>Cart</h4>
+            <div class="col-md-4 cart-section mb-2">
+                <div class="cart-header ms-2">
+                    <h4 align="center" class="mt-2">Cart</h4>
                     <!-- ORD-date-001 -->
                     <small>Order #<span class="orderNumber"><?php echo $order_code ?></span></small>
                 </div>
 
-                <div class="cart-items" id="cartItems">
+                <div class="cart-items ms-2" id="cartItems">
                     <div class="text-center text-muted mt-5">
                         <i class="bi bi-cart mb-3"></i>
                         <p>Cart Empty</p>
                     </div>
                 </div>
 
-                <div class="cart-footer">
-
+                <div class="cart-footer ms-2">
                     <div class="total-section">
 
                         <div class="d-flex justify-content-between mb-2">
@@ -246,17 +262,19 @@ $order_code = "ORD-" . date("dmy") . str_pad($nextId, 4, "0", STR_PAD_LEFT);
 
                     <div class="d-flex justify-content-between mb-2">
                         <span>Pay</span>
-                        <input type="number" id="pay" class="form-control w-50" placeholder="Enter the payment amount" oninput="calculateChange()">
+                        <input required type="number" id="pay" class="form-control w-50" placeholder="Enter the payment amount" oninput="calculateChange()">
                     </div>
 
                     <div class="d-flex justify-content-between mb-2">
                         <span>Change</span>
-                        <input type="number" id="change" class="form-control w-50" readonly>
+                        <div class="w-50">
+                            <input type="hidden" id="change_value" name="change">
+                            <input type="text" id="change_display" class="form-control" readonly>
+                        </div>
                     </div>
                 </div>
 
-                <div class="row g-2">
-
+                <div class="row g-2 mt-1 mb-2 ms-1">
                     <div class="col-md-6">
                         <button class="btn btn-clear-cart btn-danger w-100" id="clearCart">
                             <i class="bi bi-trash"></i>Clear Cart
@@ -273,12 +291,9 @@ $order_code = "ORD-" . date("dmy") . str_pad($nextId, 4, "0", STR_PAD_LEFT);
                 </div>
 
             </div>
-
         </div>
+    </div>
 
-    </div>
-    </div>
-    </div>
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"

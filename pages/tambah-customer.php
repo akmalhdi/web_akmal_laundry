@@ -39,11 +39,9 @@ if (isset($_POST['simpan'])) {
     <div class="col-sm-12">
         <div class="card">
             <div class="card-header">
-                <div class="card-title">
-                    <h3>
+                    <h3 class="card-title">
                         <?php echo isset($_GET['edit']) ? 'Update' : 'Add' ?> Customer
                     </h3>
-                </div>
             </div>
             <div class="card-body">
                 <form action="" method="post">

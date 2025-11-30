@@ -8,32 +8,6 @@ include "config/config.php";
 
 checklogin();
 
-// $currentPage = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
-// // if($currentPage == 'dashboard'){
-// //     $allowed_level = true;
-// // }
-
-// $id_level = $_SESSION['ID_LEVEL'] ?? '';
-
-// $query = mysqli_query($config, "SELECT * FROM menus JOIN level_menus ON level_menus.id_menu = menus.id WHERE id_level = '$id_level'");
-// $rows = mysqli_fetch_all($query, MYSQLI_ASSOC);
-
-// $allowed_level = false;
-
-// foreach ($rows as $row) {
-//     if($row['link'] == $currentPage){
-//         $allowed_level = true;
-//         break;
-//     }
-// }
-
-// if(!$allowed_level){
-//     echo '<h1>Access Failed</h1>';
-//     echo 'Anda tidak bisa akses ke halaman ini' . ucfirst($currentPage);
-//     echo '<a href="home.php?page=dashboard">Back to Dashboard</a>';
-//     exit;
-// }
-
 ?>
 
 <!DOCTYPE html>
@@ -43,7 +17,7 @@ checklogin();
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Dashboard | Mari Laundry</title>
+    <title class="d-print-none">Dashboard | Mari Laundry</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -107,9 +81,9 @@ checklogin();
     <!-- End Main -->
 
     <!-- ======= Footer ======= -->
-    <footer id="footer" class="footer">
+    <footer id="footer" class="footer d-print-none">
         <div class="copyright">
-            &copy; Copyright <strong><span>Mari Laundry</span></strong>. All Rights Reserved
+            &copy; Copyright <strong><span>MariLaundry</span></strong>. All Rights Reserved
         </div>
     </footer>
     <!-- End Footer -->

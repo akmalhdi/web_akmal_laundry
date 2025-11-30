@@ -3,18 +3,18 @@ session_start();
 include "../config/config.php";
 
 $id = $_GET['id'] ?? '';
-// ambil data table orders
 $query = mysqli_query($config, "SELECT * FROM trans_orders WHERE id = '$id' ORDER BY id DESC");
 $row = mysqli_fetch_assoc($query);
 
-// ambil data table order details
 $order_id = $row['id'];
 $queryDetails = mysqli_query($config, "SELECT s.name, od.* FROM trans_order_details od LEFT JOIN services s ON s.id = od.id_service WHERE id_order = '$order_id'");
 $rowDetails = mysqli_fetch_all($queryDetails, MYSQLI_ASSOC);
 
-$queryTax = mysqli_query($config, "SELECT * FROM taxs WHERE is_active = 1");
-$taxs = mysqli_fetch_assoc($queryTax);
-
+// Hitung total subtotal sebelum PPN
+$totalSubtotal = 0;
+foreach ($rowDetails as $item) {
+    $totalSubtotal += $item['subtotal'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -24,7 +24,6 @@ $taxs = mysqli_fetch_assoc($queryTax);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Struk Transaksi Laundry</title>
-
     <style>
         body {
             font-family: 'Courier New', Courier, monospace;
@@ -72,24 +71,29 @@ $taxs = mysqli_fetch_assoc($queryTax);
         }
 
         .item {
-            margin: 0 10px;
-        }
-
-        .item {
-            display: flex;
-            justify-content: space-between;
             margin: 8px 0;
             font-size: 12px;
         }
 
-        .item-qty {
-            margin: 0 10px;
+        .item-name {
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            margin-left: 10px;
+        }
+
+        .item-left {
             flex: 1;
         }
 
-        .item-price {
-            text-align: right;
+        .item-right {
             min-width: 80px;
+            text-align: right;
+            font-weight: bold;
         }
 
         .totals {
@@ -141,15 +145,8 @@ $taxs = mysqli_fetch_assoc($queryTax);
         <div class="info">
             <div class="info-row">
                 <?php
-                // strtotime
-                $date = date(
-                    'd-M-Y',
-                    strtotime($row['created_at'])
-                );
-                $time = date(
-                    'h:i:s',
-                    strtotime($row['created_at'])
-                );
+                $date = date('d-M-Y', strtotime($row['created_at']));
+                $time = date('H:i:s', strtotime($row['created_at']));
                 ?>
                 <span><?php echo $date ?></span>
                 <span><?php echo $time ?></span>
@@ -171,25 +168,27 @@ $taxs = mysqli_fetch_assoc($queryTax);
         <div class="items">
             <?php foreach ($rowDetails as $item): ?>
                 <div class="item">
-                    <span class="item-name"><?php echo $item['name'] ?></span>
-                    <span class="item-qty"><?php echo "X" . $item['qty'] ?></span>
-                    <span class="item-price"><?php echo "Rp. " . number_format($item['price'], 0, ',', '.') ?></span>
+                    <div class="item-name"><?php echo $item['name'] ?></div>
+                    <div class="item-row">
+                        <span class="item-left">
+                            <?php echo "X" . $item['qty'] . " @ " . "Rp. " . number_format($item['price'], 0, ',', '.') ?>
+                        </span>
+                        <span class="item-right">
+                            <?php echo "Rp. " . number_format($item['subtotal'], 0, ',', '.') ?>
+                        </span>
+                    </div>
                 </div>
+                <div class="separator"></div>
             <?php endforeach ?>
         </div>
 
-        <div class="separator"></div>
-
         <div class="totals">
-            <?php foreach($rowDetails as $detail): ?>
             <div class="total-row">
                 <span>Sub Total</span>
-                <span><?php echo "Rp. " . number_format($detail['subtotal'], 0, ',', '.') ?></span>
+                <span><?php echo "Rp. " . number_format($totalSubtotal, 0, ',', '.') ?></span>
             </div>
-            <?php endforeach ?>
-
             <div class="total-row">
-                <span>Ppn (<?= $taxs['percent'] ?>%)</span>
+                <span>Ppn (<?= $row['active_tax'] ?>%)</span>
                 <span><?php echo "Rp. " . number_format($row['order_tax'], 0, ',', '.') ?></span>
             </div>
         </div>
@@ -201,16 +200,6 @@ $taxs = mysqli_fetch_assoc($queryTax);
                 <span>Total</span>
                 <span><?php echo "Rp. " . number_format($row['order_total'], 0, ',', '.') ?></span>
             </div>
-
-            <!-- <div class="total-row">
-                <span>Cash</span>
-                <span>Rp. 20.000</span>
-            </div>
-
-            <div class="total-row">
-                <span>Change</span>
-                <span>Rp. 9.000</span>
-            </div> -->
         </div>
 
     </div>

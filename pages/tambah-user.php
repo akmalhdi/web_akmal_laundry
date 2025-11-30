@@ -42,49 +42,48 @@ if (isset($_POST['simpan'])) {
 
 <div class="row">
     <div class="col-sm-12">
-        <div class="card">
-            <div class="card-body">
-                <div class="card-title">
-                    <h3><?php echo isset($_GET['edit']) ? 'Edit' : 'Add' ?> User</h3>
+        <div class="card-header">
+            <h3 class="card-title">
+                <?php echo isset($_GET['edit']) ? 'Edit' : 'Add' ?> User
+            </h3>
+        </div>
+        <div class="card-body mt-3">
+            <form action="" method="post">
+                <div class="mb-3">
+                    <label for="" class="form-label">Level Name</label>
+                    <select name="id_level" class="form-control" id="">
+                        <option value="">- Select Level -</option>
+                        <?php
+                        foreach ($rowLevels as $value) :
+                        ?>
+                            <option value="<?php echo $value['id'] ?>" <?= isset($rowEdit) && $rowEdit['id_level'] == $value['id'] ? 'selected' : '' ?>><?php echo $value['name'] ?></option>
+                        <?php endforeach
+                        ?>
+                    </select>
                 </div>
 
-                <form action="" method="post">
-                    <div class="mb-3">
-                        <label for="" class="form-label">Level Name</label>
-                        <select name="id_level" class="form-control" id="">
-                            <option value="">- Select Level -</option>
-                                <?php
-                                    foreach ($rowLevels as $value) :
-                                ?>
-                                    <option value="<?php echo $value['id'] ?>" <?= isset($rowEdit) && $rowEdit['id_level'] == $value['id'] ? 'selected' : '' ?>><?php echo $value['name'] ?></option>
-                                <?php endforeach
-                            ?>
-                        </select>
-                    </div>
+                <div class="mb-3">
+                    <label for="" class="form-label">Name</label>
+                    <input type="text" name="name" class="form-control" placeholder="Enter your name" required value="<?php echo $rowEdit['name'] ?? '' ?>">
+                </div>
 
-                    <div class="mb-3">
-                        <label for="" class="form-label">Name</label>
-                        <input type="text" name="name" class="form-control" placeholder="Enter your name" required value="<?php echo $rowEdit['name'] ?? '' ?>">
-                    </div>
+                <div class="mb-3">
+                    <label for="" class="form-label">Email</label>
+                    <input type="email" name="email" class="form-control" placeholder="Enter your email" required value="<?php echo $rowEdit['email'] ?? '' ?>">
+                </div>
 
-                    <div class="mb-3">
-                        <label for="" class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" placeholder="Enter your email" required value="<?php echo $rowEdit['email'] ?? '' ?>">
-                    </div>
+                <div class="mb-3">
+                    <label for="" class="form-label">Password <small>*Kosongkan jika tidak ingin mengubah</small></label>
+                    <input type="password" name="password" class="form-control" placeholder="Enter your password">
+                </div>
 
-                    <div class="mb-3">
-                        <label for="" class="form-label">Password <small>*Kosongkan jika tidak ingin mengubah</small></label>
-                        <input type="password" name="password" class="form-control" placeholder="Enter your password">
-                    </div>
-
-                    <div class="mb-3 d-flex justify-content-center gap-2">
-                        <button class="btn btn-primary btn-sm" type="submit" name="<?php echo ($id) ? 'update' : 'simpan' ?>">
-                            <?php echo ($id) ? 'Edit' : 'Save' ?>
-                        </button>
-                        <a href="?page=user" class="btn btn-primary btn-sm">Back</a>
-                    </div>
-                </form>
-            </div>
+                <div class="mb-3 d-flex justify-content-center gap-2">
+                    <button class="btn btn-primary btn-sm" type="submit" name="<?php echo ($id) ? 'update' : 'simpan' ?>">
+                        <?php echo ($id) ? 'Edit' : 'Save' ?>
+                    </button>
+                    <a href="?page=user" class="btn btn-primary btn-sm">Back</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>

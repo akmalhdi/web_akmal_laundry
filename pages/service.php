@@ -39,7 +39,7 @@ if (isset($_GET['delete'])) {
                         <i class="bi bi-plus-circle"></i> Add Service
                     </a>
                 </div>
-                <table class="table table-bordered table-striped datatable">
+                <table class="table table-bordered table-striped">
                     <thead>
                         <tr align="center">
                             <th>No</th>
@@ -58,7 +58,7 @@ if (isset($_GET['delete'])) {
                                 <td><?php echo $value['name'] ?></td>
                                 <td><?php echo $value['price'] ?></td>
                                 <td><?php echo $value['description'] ?></td>
-                                <td>
+                                <td align="center">
                                     <a class="btn btn-success btn-sm" href="?page=tambah-service&edit=<?php echo $value['id'] ?>">
                                         <i class="bi bi-pencil"></i>
                                     </a>

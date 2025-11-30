@@ -36,7 +36,7 @@ if (isset($_GET['delete'])) {
                         <i class="bi bi-plus-circle"></i> Add Level
                     </a>
                 </div>
-                <table class="table table-bordered table-striped datatable">
+                <table class="table table-bordered table-striped">
                     <thead>
                         <tr align="center">
                             <th>No</th>
@@ -51,7 +51,7 @@ if (isset($_GET['delete'])) {
                             <tr>
                                 <td><?php echo $key + 1 ?></td>
                                 <td><?php echo $level['name'] ?></td>
-                                <td>
+                                <td align="center">
                                     <a class="btn btn-warning btn-sm" href="?page=add-role-menu&edit=<?php echo $level['id'] ?>">
                                         <i class="bi bi-people"></i>
                                     </a>

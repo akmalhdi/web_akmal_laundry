@@ -1,36 +1,132 @@
-<div class="pagetitle">
-    <h1>Dashboard</h1>
-    <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="?page=dashboard">Home</a></li>
-            <li class="breadcrumb-item">Pages</li>
-            <li class="breadcrumb-item active">Blank</li>
-        </ol>
-    </nav>
-</div><!-- End Page Title -->
+<?php
+$user = isset($_SESSION['NAME']) ? $_SESSION['NAME'] : '';
 
-<section class="section">
-    <div class="row">
-        <div class="col-lg-6">
+$queryService = mysqli_query($config, 'SELECT COUNT(id) AS total_services FROM services');
+$totalServices = mysqli_fetch_assoc($queryService)['total_services'];
 
+$queryCustomer = mysqli_query($config, 'SELECT COUNT(id) AS total_customer FROM customers');
+$totalCustomer = mysqli_fetch_assoc($queryCustomer)['total_customer'];
+
+$queryTransaction = mysqli_query($config, 'SELECT COUNT(id) AS total_transaction FROM trans_orders');
+$totalTransaction = mysqli_fetch_assoc($queryTransaction)['total_transaction'];
+
+$queryIncome = mysqli_query($config, 'SELECT SUM(order_total) AS income FROM trans_orders');
+$totalIncome = mysqli_fetch_assoc($queryIncome)['income'];
+?>
+
+<div class="container-xxl flex-grow-1 container-p-y">
+
+    <!-- Greeting Card (baris pertama) -->
+    <div class="row mb-4">
+        <div class="col-12">
             <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Example Card</h5>
-                    <p>This is an examle page with no contrnt. You can use it as a starter for your custom pages.</p>
+                <div class="d-flex align-items-end row">
+                    <div class="col-sm-7">
+                        <div class="card-body">
+                            <h5 class="card-title text-primary">Heloo <?= $user ?>! 🎉</h5>
+                            <p class="mb-4">Optimalkan layananmu—waktunya hasilkan lebih banyak order hari ini!</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-5 text-center text-sm-left">
+                        <div class="card-body pb-0 px-0 px-md-4">
+                            <img
+                                src="assets/img/dashboard/dashboard.png"
+                                height="140"
+                                alt="Greeting Image">
+                        </div>
+                    </div>
                 </div>
             </div>
-
-        </div>
-
-        <div class="col-lg-6">
-
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Example Card</h5>
-                    <p>This is an examle page with no contrnt. You can use it as a starter for your custom pages.</p>
-                </div>
-            </div>
-
         </div>
     </div>
-</section>
+
+    <!-- Statistik Cards (baris kedua) -->
+    <div class="row d-flex align-items-stretch">
+        <!-- Services -->
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-1000">
+                <div class="card-body">
+                    <div class="card-title d-flex align-items-start justify-content-between">
+                        <div class="avatar flex-shrink-0">
+                            <img src="assets/img/dashboard/laundry.png" alt="chart" class="rounded" />
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn p-0" type="button" data-bs-toggle="dropdown">
+                                <i class="bx bx-dots-vertical-rounded"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="?page=service">View More</a>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="fw-semibold d-block mb-1">Services</span>
+                    <h3 class="card-title mb-2"><?= $totalServices ?></h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer -->
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title d-flex align-items-start justify-content-between">
+                        <div class="avatar flex-shrink-0">
+                            <img src="assets/img/dashboard/customer-service.png" alt="customer" class="rounded" />
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn p-0" type="button" data-bs-toggle="dropdown">
+                                <i class="bx bx-dots-vertical-rounded"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end">
+                                <a class="dropdown-item" href="customer">View More</a>
+                                <a class="dropdown-item" href="#">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="fw-semibold d-block mb-1">Customers</span>
+                    <h3 class="card-title text-nowrap mb-2"><?= $totalCustomer ?></h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Income -->
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title d-flex align-items-start justify-content-between">
+                        <div class="avatar flex-shrink-0">
+                            <img src="assets/img/dashboard/profits.png" alt="income" class="rounded" />
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn p-0" type="button" data-bs-toggle="dropdown">
+                                <i class="bx bx-dots-vertical-rounded"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <span class="d-block fw-semibold mb-1">Income</span>
+                    <h3 class="card-title text-nowrap mb-2">Rp <?= number_format($totalIncome, 0, ',', '.') ?></h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transactions -->
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <div class="card-title d-flex align-items-start justify-content-between">
+                        <div class="avatar flex-shrink-0">
+                            <img src="assets/img/dashboard/transaction.png" alt="transactions" class="rounded" />
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn p-0" type="button" data-bs-toggle="dropdown">
+                                <i class="bx bx-dots-vertical-rounded"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <span class="fw-semibold d-block mb-1">Total Transaction</span>
+                    <h3 class="card-title mb-2"><?= $totalTransaction ?></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

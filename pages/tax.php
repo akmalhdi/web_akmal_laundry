@@ -46,7 +46,7 @@ if (isset($_GET['delete'])) {
                         <i class="bi bi-arrow-clockwise"></i> User Restore
                     </a> -->
                 </div>
-                <table class="table table-bordered table-striped datatable">
+                <table class="table table-bordered table-striped">
                     <thead>
                         <tr>
                             <th>No</th>
