@@ -8,28 +8,41 @@ include "config/config.php";
 
 checklogin();
 
-$currentPage = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
+// MIDDLEWARE
 
-$id_level = $_SESSION['ID_LEVEL'] ?? '';
+
+$currentPage = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
+$id_level    = $_SESSION['ID_LEVEL'] ?? '';
 
 $allowed_role = false;
 
-// Kalau ADMIN (level_id = 1), langsung lolos semua halaman
-if ($id_level == 1) {
-  $allowed_role = true;
-} else {
-  // baru lakukan pengecekan ke database untuk selain admin
-  $query = mysqli_query($config, "SELECT * FROM menus 
-    JOIN level_menus ON level_menus.id_menu = menus.id 
-    WHERE id_level = '$id_level' ");
-      $rows = mysqli_fetch_all($query, MYSQLI_ASSOC);
+/**
+ * Halaman ekstra yang boleh diakses
+ * meskipun TIDAK ada di tabel menus
+ *
+ * key   = level_id
+ * value = array daftar page
+ */
+$extraAccess = [
+  1 => ['tambah-customer', 'tambah-service', 'tambah-menu', 'tambah-level', 'tambah-tax', 'tambah-user', 'add-role-menu', 'history', 'detail'],
+  2 => ['history', 'tambah-customer'],
+];
 
-      foreach ($rows as $row) {
-      if ($row['link'] == $currentPage) {
-      $allowed_role = true;
-      break;
+if (isset($extraAccess[$id_level]) && in_array($currentPage, $extraAccess[$id_level])) {
+    // kalau dia ada di daftar "akses ekstra", langsung lolos
+    $allowed_role = true;
+} else {
+    // selain itu, cek seperti biasa ke tabel menus + level_menus
+    $query = mysqli_query($config, "SELECT * FROM menus 
+    JOIN level_menus ON level_menus.id_menu = menus.id WHERE id_level = '$id_level' ");
+    $rows = mysqli_fetch_all($query, MYSQLI_ASSOC);
+
+    foreach ($rows as $row) {
+        if ($row['link'] == $currentPage) {
+            $allowed_role = true;
+            break;
+        }
     }
-  }
 }
 
 
