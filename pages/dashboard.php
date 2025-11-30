@@ -24,7 +24,7 @@ $totalIncome = mysqli_fetch_assoc($queryIncome)['income'];
                     <div class="col-sm-7">
                         <div class="card-body">
                             <h5 class="card-title text-primary">Heloo <?= $user ?>! 🎉</h5>
-                            <p class="mb-4">Optimalkan layananmu—waktunya hasilkan lebih banyak order hari ini!</p>
+                            <p class="mb-4">Optimize your service—it's time to generate more orders today!</p>
                         </div>
                     </div>
                     <div class="col-sm-5 text-center text-sm-left">

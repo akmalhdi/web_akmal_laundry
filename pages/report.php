@@ -25,7 +25,7 @@ $result = $config->query($sql);
 
 <body>
   <!-- Tombol cetak -->
-  <button id="print-btn" onclick="window.print()" class="btn btn-primary mb-3 d-print-none">🖨️ Cetak Laporan</button>
+  <button id="print-btn" onclick="window.print()" class="btn btn-primary mb-3 d-print-none">🖨️ print report</button>
 
   <!-- Tampilkan periode terpilih -->
   <div class="card">

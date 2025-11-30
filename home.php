@@ -8,6 +8,40 @@ include "config/config.php";
 
 checklogin();
 
+$currentPage = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
+
+$id_level = $_SESSION['ID_LEVEL'] ?? '';
+
+$allowed_role = false;
+
+// Kalau ADMIN (level_id = 1), langsung lolos semua halaman
+if ($id_level == 1) {
+  $allowed_role = true;
+} else {
+  // baru lakukan pengecekan ke database untuk selain admin
+  $query = mysqli_query($config, "SELECT * FROM menus 
+    JOIN level_menus ON level_menus.id_menu = menus.id 
+    WHERE id_level = '$id_level' ");
+      $rows = mysqli_fetch_all($query, MYSQLI_ASSOC);
+
+      foreach ($rows as $row) {
+      if ($row['link'] == $currentPage) {
+      $allowed_role = true;
+      break;
+    }
+  }
+}
+
+
+
+if (!$allowed_role) {
+  echo "<h1 class='center'>Access Failed!!</h1>";
+  echo "You do not have permission to access this page." . ucfirst($currentPage);
+  echo "<br>";
+  echo "<a href='home.php?page=dashboard'>Back to Dashboard</a>";
+  exit;
+}
+
 ?>
 
 <!DOCTYPE html>

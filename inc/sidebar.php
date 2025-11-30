@@ -9,7 +9,10 @@
 <aside id="sidebar" class="sidebar">
 
     <ul class="sidebar-nav" id="sidebar-nav">
-        <?php foreach ($rowLevelMenus as $rowLevelMenu): ?>
+        <?php foreach ($rowLevelMenus as $rowLevelMenu): ?> 
+            <?php if($rowLevelMenu['link'] == 'history') {
+                
+            } ?>
         <li class="nav-item">
             <a class="nav-link collapsed" href="?page=<?= $rowLevelMenu['link'] ?>">
                 <i class="<?= $rowLevelMenu['icon'] ?>"></i>
